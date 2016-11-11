@@ -1,0 +1,103 @@
+buildscript {
+    ext.kotlin_version = '1.1-SNAPSHOT'
+    ext.commonproj_version = '1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+
+allprojects {
+    apply plugin: 'maven-publish'
+
+    group 'org.test.commonextproj'
+    version '1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+dependencies {
+    // multitarget library dependency
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    // TODO: compile "org.test.commonproj:commonproj:$commonproj_version"
+}
+
+project('jre6') {
+    apply plugin: 'kotlin'
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        compile "org.test.commonproj:commonproj-jre6:$commonproj_version"
+    }
+    compileKotlin {
+        kotlinOptions.jdkHome = System.getenv("JDK_16")
+    }
+}
+
+project('jre8') {
+    apply plugin: 'kotlin'
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+        compile "org.test.commonproj:commonproj-jre8:$commonproj_version"
+    }
+    compileKotlin {
+        kotlinOptions.jdkHome = System.getenv("JDK_18")
+    }
+}
+
+
+// need to be here, otherwise sourceSets are erased
+subprojects {
+    sourceSets {
+        main {
+            kotlin {
+                srcDirs += parent.sourceSets.main.kotlin.srcDirs
+            }
+        }
+    }
+
+    jar {
+        baseName "${parent.name}-${project.name}"
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allSource
+        classifier "sources"
+    }
+
+    publishing {
+        publications {
+            mainPublication(MavenPublication) {
+                artifactId "${parent.name}-${project.name}"
+                from components.java
+                artifact sourcesJar
+
+                pom.withXml {
+                    asNode().dependencies.'*'.each { it.scope*.value = 'compile'}
+                }
+            }
+        }
+    }
+}
+
+
+compileKotlin {
+    enabled = false
+}
+
+publishing {
+    publications {
+        // TODO: commonlib mutlitarget lib
+    }
+}

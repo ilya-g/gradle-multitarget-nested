@@ -1,0 +1,122 @@
+buildscript {
+    ext.kotlin_version = '1.1-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+
+allprojects {
+    apply plugin: 'maven-publish'
+
+    group 'org.test.commonproj'
+    version '1.0-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+}
+
+dependencies {
+    // multitarget library dependency
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile project(':commonlib')
+}
+
+project('jre6') {
+    apply plugin: 'kotlin'
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        compile project(':commonlib:jre6')
+    }
+
+    compileKotlin {
+        kotlinOptions.jdkHome = System.getenv("JDK_16")
+    }
+}
+
+project('jre8') {
+    apply plugin: 'kotlin'
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+        compile project(':commonlib:jre8')
+    }
+    compileKotlin {
+        kotlinOptions.jdkHome = System.getenv("JDK_18")
+    }
+
+}
+
+project('js') {
+    apply plugin: 'kotlin2js'
+
+    dependencies {
+        compile "org.jetbrains.kotlin:kotlin-js-library:$kotlin_version"
+        compile project(':commonlib:js')
+    }
+
+    def outDir = "${buildDir}/kotlin2js/main/"
+    compileKotlin2Js {
+        kotlinOptions.outputFile = outDir + "commonproj.js"
+    }
+    def testOutDir = "${buildDir}/kotlin2js/test/"
+    compileTestKotlin2Js {
+        kotlinOptions.outputFile = testOutDir + "test.js"
+    }
+    // TODO: packaging, publishing
+}
+
+// need to be here, otherwise sourceSets are erased
+subprojects {
+    sourceSets {
+        main {
+            kotlin {
+                srcDirs += parent.sourceSets.main.kotlin.srcDirs
+            }
+        }
+    }
+
+    jar {
+        baseName "${parent.name}-${project.name}"
+    }
+
+    task sourcesJar(type: Jar) {
+        from sourceSets.main.allSource
+        classifier "sources"
+    }
+
+    publishing {
+        publications {
+            mainPublication(MavenPublication) {
+                artifactId "${parent.name}-${project.name}"
+                from components.java
+                artifact sourcesJar
+
+                pom.withXml {
+                    asNode().dependencies.'*'.each { it.scope*.value = 'compile'}
+                }
+            }
+        }
+    }
+}
+
+
+compileKotlin {
+    enabled = false
+}
+
+publishing {
+    publications {
+        // TODO: commonlib mutlitarget lib
+    }
+}

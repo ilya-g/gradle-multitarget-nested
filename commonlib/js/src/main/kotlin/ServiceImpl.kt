@@ -2,12 +2,12 @@ package org.test.commonlib
 
 import kotlin.js.*
 
-typealias MyDate = Date
+impl typealias MyDate = Date
 
 class ServiceImpl : Service {
     override fun method(): String {
         return Date().toString()
     }
 
-    override fun typedMethod(): MyDate = Date()
+    override fun typedMethod(): MyDate = MyDate()
 }

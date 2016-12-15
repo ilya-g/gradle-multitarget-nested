@@ -5,3 +5,6 @@ interface Service {
 
     fun typedMethod(): MyDate
 }
+
+
+header class MyDate

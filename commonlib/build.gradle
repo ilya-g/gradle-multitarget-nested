@@ -41,34 +41,8 @@ project('jre6') {
     }
 }
 
-/*project('jre8') {
-    apply plugin: 'kotlin'
-
-    dependencies {
-        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-        compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    }
-    compileKotlin {
-        kotlinOptions.jdkHome = System.getenv("JDK_18")
-    }
-
-}*/
-
 project('js') {
     apply plugin: 'kotlin-platform-js'
-
-//    configurations {
-//        compile.extendsFrom parent.configurations.compile
-//        compile {
-//
-////            resolutionStrategy {
-////                dependencySubstitution {
-////                    substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module("org.jetbrains.kotlin:kotlin-js-library:$kotlin_version")
-//////                    substitute project(':util') with module('org.gradle:util:3.0')
-////                }
-////            }
-//        }
-//    }
 
     dependencies {
         implement project(":commonlib")

@@ -88,9 +88,7 @@ project('js') {
 
 // need to be here, otherwise sourceSets are erased
 subprojects {
-    jar {
-        baseName "${parent.name}-${project.name}"
-    }
+    archivesBaseName = "${parent.name}-${project.name}"
 
     task sourcesJar(type: Jar) {
         from sourceSets.main.allSource
@@ -99,7 +97,6 @@ subprojects {
     publishing {
         publications {
             mainPublication(MavenPublication) {
-                artifactId "${parent.name}-${project.name}"
                 from components.java
                 artifact sourcesJar
 

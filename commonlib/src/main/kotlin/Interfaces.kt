@@ -8,3 +8,11 @@ interface Service {
 
 
 header class MyDate
+
+
+abstract class AbstractServiceImpl : Service
+
+header class DefaultServiceImpl : AbstractServiceImpl() {
+    override fun method(): String
+    override fun typedMethod(): MyDate
+}

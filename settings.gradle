@@ -1,5 +1,6 @@
 rootProject.name = 'mutlitargetProj'
 include 'commonlib', 'commonlib:jre6', 'commonlib:js'
-//include 'commonproj', 'commonproj:jre6', 'commonproj:jre8', 'commonproj:js'
+include 'commonproj', 'commonproj:jre6', 'commonproj:js'
+include 'jre-client-proj'
 //include 'commonextproj', 'commonextproj:jre6', 'commonextproj:jre8'
 

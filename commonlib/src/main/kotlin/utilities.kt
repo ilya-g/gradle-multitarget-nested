@@ -1,3 +1,5 @@
+package org.test.commonlib
+
 fun utilityMethod() =
         (1..4).mapTo(mutableListOf()) { it to it.toString() }
 //(1..4).asSequence().map { it to it.toString() }.toMap()
@@ -12,3 +14,9 @@ fun groupByKeysAndValues() {
     // same content as in namesByTeam map, but the map is mutable
     mutableNamesByTeam == namesByTeam
 }
+
+
+fun commonReturningHeaderType(): AbstractServiceImpl = DefaultServiceImpl()
+header fun headerReturningCommonType(): Service
+
+header fun headerWithPair(keyValue: Pair<String, Int>)

@@ -1,3 +1,4 @@
+@file:JvmName("UtilitiesJVMKt")
 package org.test.commonlib
 
 

@@ -57,14 +57,10 @@ project('js') {
     compileTestKotlin2Js {
         kotlinOptions.outputFile = testOutDir + "test.js"
     }
-    // TODO: packaging, publishing
 }
 
-// need to be here, otherwise sourceSets are erased
 subprojects {
-    jar {
-        baseName "${parent.name}-${project.name}"
-    }
+    archivesBaseName = "${parent.name}-${project.name}"
 
     task sourcesJar(type: Jar) {
         from sourceSets.main.allSource
@@ -73,7 +69,7 @@ subprojects {
     publishing {
         publications {
             mainPublication(MavenPublication) {
-                artifactId "${parent.name}-${project.name}"
+                artifactId archivesBaseName
                 from components.java
                 artifact sourcesJar
 
@@ -95,7 +91,7 @@ task sourcesJar(type: Jar) {
 publishing {
     publications {
         mainPublication(MavenPublication) {
-            artifactId "${parent.name}-${project.name}"
+            artifactId archivesBaseName
             from components.java
             artifact sourcesJar
 
